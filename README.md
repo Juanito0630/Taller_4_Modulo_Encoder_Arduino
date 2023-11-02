@@ -12,3 +12,51 @@ Para esto se declararon dos variables: A y B y a cada una se le dio el valor del
 Se declaran las posiciones y las entradas de los pines en el "void setup" y se le pone un mensaje para confirmar que se conecto correctamente.
 En el "void loop" se realiza un funcion if en la cual la condicion sera que si POSICION es diferente de ANTERIOR actualizara ANTERIOR para que sea posible el conteo y se imprimira en la consola.
 En "void encoder" se pone un if donde si el valor de B es alto significa que se esta girando en sentido horario haciendo que aumenten los numeros hasta su tope y si no haciendo que disminuyan hasta su tope.
+
+Codigo Actividad:
+
+<code>
+         int A = 2;
+int B = 4;
+
+int ANTERIOR = 50;
+
+volatile int POSICION = 50;
+
+void setup() {
+  pinMode(A, INPUT);
+  pinMode(B, INPUT);
+
+  Serial.begin(9600);
+
+  attachInterrupt(digitalPinToInterrupt(A), encoder, LOW);
+
+  Serial.println("Listo"); 
+}
+
+void loop() {
+  if (POSICION != ANTERIOR){
+    Serial.println(POSICION);
+    ANTERIOR = POSICION;
+  }
+}
+
+void encoder() {
+  static unsigned long ultimaInterrupcion = 0;
+  unsigned long tiempoInterrupcion = millis();
+
+  if (tiempoInterrupcion - ultimaInterrupcion > 5){  
+
+  if (digitalRead(B) == HIGH)
+  {
+    POSICION++;
+  }
+  else{ 
+    POSICION--;
+  }
+  POSICION = min(100,max(0,POSICION));
+
+  ultimaInterrupcion = tiempoInterrupcion;
+  }
+}
+</code>
